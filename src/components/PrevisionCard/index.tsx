@@ -15,9 +15,7 @@ interface Props {
 
 const PrevisionCard = ({ prevision }: Props): ReactElement => (
   <StyledPrevisionCard key={prevision.dt}>
-    <Text fontFamily="Katwijkmono" size="large">
-      {getWeekdayByDate(prevision.dt_txt).slice(0, 3)}.
-    </Text>
+    <Text size="large">{getWeekdayByDate(prevision.dt_txt).slice(0, 3)}.</Text>
     <Hr />
     <Image
       src={`https://openweathermap.org/img/wn/${prevision.weather[0].icon}@2x.png`}
@@ -25,9 +23,7 @@ const PrevisionCard = ({ prevision }: Props): ReactElement => (
       width={82}
       alt={prevision.weather[0].description}
     />
-    <Text fontFamily="Katwijkmono" size="large">
-      {Math.round(prevision.main.temp)}°
-    </Text>
+    <Text size="large">{Math.round(prevision.main.temp)}°</Text>
   </StyledPrevisionCard>
 )
 
