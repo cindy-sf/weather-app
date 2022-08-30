@@ -13,8 +13,6 @@ export const formatPrevisions = (
       const prevWeekday = getWeekdayByDate(previousPrevisionDate)
       const currentWeekday = getWeekdayByDate(currentPrevisionDate)
 
-      console.log('//////', prev, current)
-
       if (prevWeekday === currentWeekday) return [...prev]
 
       return [...prev, current]
