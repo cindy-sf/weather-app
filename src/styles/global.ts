@@ -60,7 +60,7 @@ export const GlobalStyle = createGlobalStyle`
   }
 
   a, button {
-    cursor: pointer;
+    cursor: pointer !important;
   }
 
   button {
@@ -69,6 +69,10 @@ export const GlobalStyle = createGlobalStyle`
 
   li {
     list-style: none;
+  }
+
+  a, p {
+    font-family: 'Katwijkmono', sans-serif;
   }
 
   input:focus {
