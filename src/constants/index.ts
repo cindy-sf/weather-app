@@ -3,6 +3,10 @@ export const CITY = 'Paris'
 export const DEFAUL_LANG = 'fr'
 export const UNITS = 'metric'
 
+export const cookiesOptions = {
+  maxAge: 60 * 60, // 1 hour
+}
+
 export const weatherDetailsInfos = [
   {
     name: 'Vent',

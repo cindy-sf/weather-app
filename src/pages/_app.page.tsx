@@ -8,12 +8,14 @@ import { GlobalStyle } from '@styles/global'
 import { theme } from '@styles/theme'
 
 const MyApp = ({ Component, pageProps }: AppProps): ReactElement => (
-  <ThemeProvider theme={theme}>
+  <>
     <GlobalStyle />
-    <Layout>
-      <Component {...pageProps} />
-    </Layout>
-  </ThemeProvider>
+    <ThemeProvider theme={theme}>
+      <Layout>
+        <Component {...pageProps} />
+      </Layout>
+    </ThemeProvider>
+  </>
 )
 
 export default MyApp

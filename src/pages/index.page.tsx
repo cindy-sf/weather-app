@@ -1,4 +1,6 @@
+import Cookies from 'universal-cookie'
 import Image from 'next/image'
+import { FunctionComponent, useEffect, useState } from 'react'
 
 import { formatPrevisions } from '@src/utils/formatPrevisions'
 import { fetchPrevisions } from '@src/services/forecast'
@@ -11,6 +13,7 @@ import useWindowSize from '@src/hooks/useWindowSize'
 
 import type { Previsions } from '@src/types/previsions'
 import type { Weather } from '@src/types/weather'
+import { cookiesOptions } from '@src/constants'
 
 import EiffelTowerImg from '@assets/images/eiffel_tower.png'
 
@@ -21,21 +24,53 @@ import {
   PrevisionCardWrapper,
 } from './index.styles'
 
-interface Props {
-  dailyWeather?: Weather | null
-  previsions?: Previsions['list'] | null
-}
-
-const Home = ({ dailyWeather, previsions }: Props) => {
+const Home: FunctionComponent = () => {
+  const [dailyWeatherData, setDailyWeatherData] = useState<Weather | null>()
+  const [previsionsData, setPrevisionsData] = useState<
+    Previsions['list'] | null
+  >()
   const { width: windowWidth } = useWindowSize()
 
-  if (dailyWeather === null || previsions === null) {
-    return <Text as="h2">Erreur</Text>
-  }
+  useEffect(() => {
+    const fetchData = async (): Promise<void> => {
+      const cookies = new Cookies()
+      const allCookies = cookies.getAll()
 
-  if (!dailyWeather || !previsions) {
+      if (allCookies.dailyWeather && allCookies.previsions) {
+        setDailyWeatherData(allCookies.dailyWeather)
+        setPrevisionsData(allCookies.previsions)
+        return
+      }
+
+      try {
+        const dailyWeather = await fetchDailyWeather()
+        const previsions = await fetchPrevisions()
+        const formattedPrevisions = formatPrevisions(previsions.list)
+
+        cookies.set(
+          'dailyWeather',
+          JSON.stringify(dailyWeather),
+          cookiesOptions
+        )
+        cookies.set(
+          'previsions',
+          JSON.stringify(formattedPrevisions),
+          cookiesOptions
+        )
+      } catch (error) {
+        setDailyWeatherData(null)
+        setPrevisionsData(null)
+      }
+    }
+
+    fetchData()
+  }, [])
+
+  if (dailyWeatherData === null || previsionsData === null)
+    return <Text as="h2">Erreur</Text>
+
+  if (!dailyWeatherData || !previsionsData)
     return <Text as="h2">Chargement...</Text>
-  }
 
   return (
     <>
@@ -48,7 +83,7 @@ const Home = ({ dailyWeather, previsions }: Props) => {
           <Text as="h2" size="xLarge">
             Paris
           </Text>
-          <WeatherCard weatherData={dailyWeather} />
+          <WeatherCard weatherData={dailyWeatherData} />
         </ParisContainer>
       </Container>
 
@@ -58,34 +93,13 @@ const Home = ({ dailyWeather, previsions }: Props) => {
         </Text>
 
         <PrevisionCardWrapper>
-          {previsions.map((prevision) => (
-            <PrevisionCard key={prevision.dt} prevision={prevision} />
+          {previsionsData.map((prevision, index) => (
+            <PrevisionCard key={index} prevision={prevision} />
           ))}
         </PrevisionCardWrapper>
       </PrevisionContainer>
     </>
   )
-}
-
-export const getStaticProps = async (): Promise<{ props: Props }> => {
-  try {
-    const dailyWeather = await fetchDailyWeather()
-    const previsions = await fetchPrevisions()
-
-    return {
-      props: {
-        dailyWeather,
-        previsions: formatPrevisions(previsions.list),
-      },
-    }
-  } catch (error) {
-    return {
-      props: {
-        dailyWeather: null,
-        previsions: null,
-      },
-    }
-  }
 }
 
 export default Home

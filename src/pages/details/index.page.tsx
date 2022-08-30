@@ -1,14 +1,21 @@
+import Cookies from 'universal-cookie'
 import Image from 'next/image'
-import type { ReactElement } from 'react'
 import Link from 'next/link'
+import type { GetServerSideProps } from 'next'
+import type { ReactElement } from 'react'
+import { FunctionComponent, useEffect, useState } from 'react'
 
 import Text from '@components/Text'
 
 import { fetchDailyWeather } from '@src/services/weather'
 
+import { cookiesOptions, weatherDetailsInfos } from '@src/constants'
+import { getObjectValueByPath } from '@src/utils/getObjectValueByPath'
 import type { Weather } from '@src/types/weather'
-import { weatherDetailsInfos } from '@src/constants'
+
 import useWindowSize from '@src/hooks/useWindowSize'
+
+import WeatherCard from '@components/WeatherCard'
 
 import {
   DetailsCard,
@@ -17,25 +24,46 @@ import {
   PageTitleContainer,
   WeatherCardContainer,
 } from './index.styles'
-import WeatherCard from '@components/WeatherCard'
-import { getObjectValueByPath } from '@src/utils/getObjectValueByPath'
 
 interface Props {
   dailyWeather?: Weather | null
 }
 
-const Details = ({ dailyWeather }: Props): ReactElement => {
+const Details: FunctionComponent = (): ReactElement => {
+  const [dailyWeatherData, setDailyWeatherData] = useState<Weather | null>()
   const { width: windowWidth } = useWindowSize()
 
-  if (dailyWeather === null) {
-    return <Text as="h2">Erreur</Text>
-  }
+  useEffect(() => {
+    const fetchData = async (): Promise<void> => {
+      const cookies = new Cookies()
+      const dailyWeatherCookie = cookies.get('dailyWeather')
 
-  if (!dailyWeather) {
-    return <Text as="h2">Chargement...</Text>
-  }
+      if (dailyWeatherCookie) {
+        setDailyWeatherData(dailyWeatherCookie)
+        return
+      }
 
-  const BackLink = () => (
+      try {
+        const dailyWeather = await fetchDailyWeather()
+
+        cookies.set(
+          'dailyWeather',
+          JSON.stringify(dailyWeather),
+          cookiesOptions
+        )
+      } catch (error) {
+        setDailyWeatherData(null)
+      }
+    }
+
+    fetchData()
+  }, [])
+
+  if (dailyWeatherData === null) return <Text as="h2">Erreur</Text>
+
+  if (!dailyWeatherData) return <Text as="h2">Chargement...</Text>
+
+  const BackLink = (): ReactElement => (
     <Link href="/">
       <Text size="small" as="a" role="link" title="Acceuil">
         ← Retour à l'accueil
@@ -56,7 +84,7 @@ const Details = ({ dailyWeather }: Props): ReactElement => {
       </PageTitleContainer>
 
       <WeatherCardContainer>
-        <WeatherCard variant="full" weatherData={dailyWeather} />
+        <WeatherCard variant="full" weatherData={dailyWeatherData} />
       </WeatherCardContainer>
 
       <Text as="h2" size="xLarge" marginTop="large">
@@ -67,7 +95,7 @@ const Details = ({ dailyWeather }: Props): ReactElement => {
         {weatherDetailsInfos.map((info) => {
           const data = getObjectValueByPath(
             info.dataPath,
-            dailyWeather
+            dailyWeatherData
           ) as number
 
           return (
@@ -90,24 +118,6 @@ const Details = ({ dailyWeather }: Props): ReactElement => {
       {windowWidth && windowWidth < 768 && <BackLink />}
     </>
   )
-}
-
-export const getStaticProps = async (): Promise<{ props: Props }> => {
-  try {
-    const dailyWeather = await fetchDailyWeather()
-
-    return {
-      props: {
-        dailyWeather,
-      },
-    }
-  } catch (error) {
-    return {
-      props: {
-        dailyWeather: null,
-      },
-    }
-  }
 }
 
 export default Details
