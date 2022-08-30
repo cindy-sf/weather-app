@@ -21,7 +21,6 @@ import { StyledText } from './index.styles'
 export interface Props {
   as?: AllowedTags
   color?: AllowedColors
-  colorHover?: AllowedColors
   size?: AllowedFontSizes
   children: ReactNode | string[] | string
   textDecoration?: TextDecoration

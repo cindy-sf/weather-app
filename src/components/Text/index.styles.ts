@@ -25,12 +25,4 @@ export const StyledText = styled.p<StyledProps>`
   white-space: ${({ whiteSpace }) => whiteSpace && whiteSpace};
   overflow: ${({ overflow }) => overflow && overflow};
   text-overflow: ${({ textOverflow }) => textOverflow && textOverflow};
-
-  ${({ colorHover, theme }) =>
-    colorHover &&
-    `
-      :hover {
-        color: ${theme.colors.purple};
-      }
-  `}
 `

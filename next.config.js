@@ -10,7 +10,7 @@ const nextConfig = {
   env: {
     OPEN_WEATHERMAP_API_KEY: process.env.OPEN_WEATHERMAP_API_KEY,
   },
+  pageExtensions: ['page.tsx'],
 }
 
 module.exports = nextConfig
-

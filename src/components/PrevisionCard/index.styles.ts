@@ -12,7 +12,7 @@ export const StyledPrevisionCard = styled.div`
   align-items: center;
   flex-direction: column;
   background-color: ${({ theme }) => theme.colors.grey};
-  border-radius: ${({ theme }) => theme.radius.large};
+  border-radius: ${({ theme }) => theme.radius.medium};
   height: 25rem;
   width: 12rem;
   margin-top: ${({ theme }) => theme.space.small};
@@ -22,5 +22,6 @@ export const StyledPrevisionCard = styled.div`
 
   &:hover {
     background-color: ${({ theme }) => theme.colors.purple};
+    border-radius: ${({ theme }) => theme.radius.large};
   }
 `
