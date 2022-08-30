@@ -43,6 +43,7 @@ const Home = ({ dailyWeather, previsions }: Props) => {
         {windowWidth && windowWidth > 742 && (
           <Image src={EiffelTowerImg} width={590} height={343} layout="fixed" />
         )}
+
         <ParisContainer>
           <Text as="h2" size="xLarge">
             Paris
@@ -50,10 +51,12 @@ const Home = ({ dailyWeather, previsions }: Props) => {
           <WeatherCard weatherData={dailyWeather} />
         </ParisContainer>
       </Container>
+
       <PrevisionContainer>
         <Text as="h2" size="xLarge">
           Prévisions sur 5 jours
         </Text>
+
         <PrevisionCardWrapper>
           {previsions.map((prevision) => (
             <PrevisionCard key={prevision.dt} prevision={prevision} />
