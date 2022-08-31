@@ -57,6 +57,9 @@ const Home: FunctionComponent = () => {
           JSON.stringify(formattedPrevisions),
           cookiesOptions
         )
+
+        setDailyWeatherData(dailyWeather)
+        setPrevisionsData(formattedPrevisions)
       } catch (error) {
         setDailyWeatherData(null)
         setPrevisionsData(null)

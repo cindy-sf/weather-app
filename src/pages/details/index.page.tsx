@@ -1,7 +1,6 @@
 import Cookies from 'universal-cookie'
 import Image from 'next/image'
 import Link from 'next/link'
-import type { GetServerSideProps } from 'next'
 import type { ReactElement } from 'react'
 import { FunctionComponent, useEffect, useState } from 'react'
 
@@ -51,6 +50,8 @@ const Details: FunctionComponent = (): ReactElement => {
           JSON.stringify(dailyWeather),
           cookiesOptions
         )
+
+        setDailyWeatherData(dailyWeather)
       } catch (error) {
         setDailyWeatherData(null)
       }
